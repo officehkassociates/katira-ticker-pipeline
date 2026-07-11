@@ -1,0 +1,29 @@
+# Render.com deployment config for the ticker API.
+#
+# Usage:
+#   1. Push this repo to GitHub.
+#   2. In Render: New -> Blueprint -> point at this repo. Render reads
+#      this file automatically and provisions the service below.
+#   3. Once live, Render gives you a URL like
+#      https://katira-ticker-api.onrender.com -- put that (or your own
+#      custom domain, e.g. api.katira.co.in, mapped to it in Render's
+#      "Custom Domains" tab) into window.TICKER_API_BASE in the website.
+#
+# Free tier note: Render's free web services sleep after ~15 minutes of
+# no traffic and take a few seconds to wake on the next request -- fine
+# for a once-a-day-refreshed ticker, but the first visitor after a quiet
+# night may see a brief loading state. Upgrade to a paid instance if you
+# want it always warm.
+
+services:
+  - type: web
+    name: katira-ticker-api
+    runtime: node
+    rootDir: api
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.11.0
+    healthCheckPath: /api/health
