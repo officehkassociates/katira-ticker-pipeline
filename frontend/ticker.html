@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regulatory Ticker Demo</title>
+<link rel="stylesheet" href="ticker.css">
+</head>
+<body>
+
+<!--
+  Drop this markup anywhere on your site (e.g. just under the header).
+  Each ticker is a self-contained widget: a label, a viewport (the
+  visible window), and an inner track that actually scrolls. JS clones
+  the track content once so the CSS animation can loop seamlessly.
+-->
+
+<div class="ticker-block" data-ticker-type="news">
+  <div class="ticker-label">
+    <span class="dot"></span> Latest Regulatory News
+  </div>
+  <div class="ticker-viewport">
+    <div class="ticker-track" id="news-track">
+      <span class="ticker-loading">Loading latest circulars&hellip;</span>
+    </div>
+  </div>
+</div>
+
+<div class="ticker-block" data-ticker-type="dates">
+  <div class="ticker-label">
+    <span class="dot dot-gold"></span> Important Financial &amp; Compliance Dates
+  </div>
+  <div class="ticker-viewport">
+    <div class="ticker-track" id="dates-track">
+      <span class="ticker-loading">Loading upcoming deadlines&hellip;</span>
+    </div>
+  </div>
+</div>
+
+<script src="ticker.js"></script>
+</body>
+</html>

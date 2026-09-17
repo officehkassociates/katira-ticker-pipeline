@@ -1,0 +1,133 @@
+/* ==========================================================
+   Regulatory Ticker -- styles
+   ========================================================== */
+
+:root {
+  --navy: #101d45;
+  --gold: #a1762f;
+  --line: #d9dde4;
+  --paper: #f5f6f8;
+}
+
+.ticker-block {
+  display: flex;
+  align-items: center;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  font-family: 'IBM Plex Sans', Arial, sans-serif;
+}
+
+.ticker-label {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 10px 18px;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  display: inline-block;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.dot-gold { background: var(--gold); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.ticker-viewport {
+  flex: 1 1 auto;
+  overflow: hidden;
+  position: relative;
+  height: 40px;
+}
+
+/* width: max-content lets the track grow to fit however many items JS
+   renders. We render the item list TWICE back-to-back so that
+   translateX(-50%) -- i.e. scrolling exactly one copy's width -- loops
+   seamlessly with no visible jump. */
+.ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  width: max-content;
+  padding-left: 24px;
+  position: absolute;
+  white-space: nowrap;
+  animation: ticker-scroll var(--ticker-duration, 40s) linear infinite;
+}
+
+/* Pause on hover */
+.ticker-viewport:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.ticker-item {
+  color: var(--navy);
+  text-decoration: none;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ticker-item:hover {
+  text-decoration: underline;
+  color: var(--gold);
+}
+
+.ticker-item .src-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  background: rgba(161, 118, 47, 0.12);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+.ticker-item .event-date {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  color: #6b7280;
+}
+
+.ticker-loading {
+  font-size: 13px;
+  color: #8891a0;
+  padding-right: 24px;
+}
+
+/* Respect reduced-motion preference: freeze instead of forcing animation */
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+    position: static;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .ticker-label { font-size: 11px; padding: 8px 12px; }
+  .ticker-viewport { height: 34px; }
+  .ticker-item { font-size: 12.5px; }
+}
