@@ -1,0 +1,49 @@
+name: Daily Regulatory Ticker Scrape
+
+# Runs every day at 6:00 AM IST.
+# IST is UTC+5:30, so 6:00 AM IST = 00:30 UTC.
+# GitHub Actions cron uses UTC and standard 5-field cron syntax.
+on:
+  schedule:
+    - cron: "30 0 * * *"
+  workflow_dispatch: {}   # lets you trigger a manual run from the Actions tab
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Run scrapers
+        run: python main.py
+        env:
+          # Uncomment and set as a GitHub Actions secret if you later add
+          # a proxy/rotating-IP service to reduce NSE/MCA rate-limiting.
+          # HTTP_PROXY: ${{ secrets.SCRAPER_PROXY_URL }}
+          PYTHONUNBUFFERED: "1"
+
+      - name: Commit updated database back to the repo
+        # Simplest possible persistence: commit the SQLite file back to the
+        # repo so the API server (running elsewhere, or as a second job)
+        # can read the latest data. Swap this step out for "upload DB to
+        # S3 / Supabase / a managed Postgres" once you outgrow SQLite.
+        run: |
+          git config user.name "regulatory-ticker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add db/regulatory_feed.db
+          git diff --quiet --cached || git commit -m "chore: daily regulatory data refresh $(date -u +%Y-%m-%d)"
+          git push
